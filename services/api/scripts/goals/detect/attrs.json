@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "MatchingStreams",
+  "type": "object",
+  "properties": {
+    "streams": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["streams"],
+  "additionalProperties": false
+}
