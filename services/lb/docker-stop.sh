@@ -2,5 +2,5 @@
 
 export $(cat ./../../.env | grep -v ^# | xargs)
 
-docker stop com.attlas.lb
-docker rmi com.attlas.lb
+docker stop com.globallogic.pocs.spotmonitor.lb
+docker rmi com.globallogic.pocs.spotmonitor.lb

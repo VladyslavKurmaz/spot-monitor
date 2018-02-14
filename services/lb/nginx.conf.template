@@ -42,7 +42,7 @@ http {
   }
 
   upstream service {
-%SERVICE_SERVERS%
+%SERVICES_SERVERS%
   }
 
   server {

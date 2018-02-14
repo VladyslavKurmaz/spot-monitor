@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 pushd services/api
 ./build.sh

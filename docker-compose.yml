@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  attlas-network:
+  spotmonitor-network:
 
 services:
   lb:
@@ -9,58 +9,36 @@ services:
       context: ./services/lb
       args:
         - COMPOSE_PROJECT_NAME
-        - LB_STATIC_WEB_NAME
-        - LB_STATIC_WEB_NUM
+        - LB_STATIC_DASHBOARD_NAME
+        - LB_STATIC_DASHBOARD_NUM
         - LB_SERVICES_API_NAME
         - LB_SERVICES_API_NUM
-        - WEB_PORT
-        - WEB_PORTS
-        - API_PORT
+        - STATIC_DASHBOARD_PORT
+        - STATIC_DASHBOARD_PORTS
+        - SERVICES_API_PORT
     image: ${COMPOSE_PROJECT_NAME}-lb
     networks:
-      - attlas-network
+      - spotmonitor-network
     ports:
-      - ${WEB_PORT}:${WEB_PORT}
-      - ${WEB_PORTS}:${WEB_PORTS}
-      - ${API_PORT}:${API_PORT}
+      - ${STATIC_DASHBOARD_PORT}:${STATIC_DASHBOARD_PORT}
+      - ${STATIC_DASHBOARD_PORTS}:${STATIC_DASHBOARD_PORTS}
+      - ${SERVICES_API_PORT}:${SERVICES_API_PORT}
     depends_on:
-      - web
+      - dashboard
       - api
-  web:
+  dashboard:
     build:
-      context: ./static/web
-    image: ${COMPOSE_PROJECT_NAME}-web
+      context: ./static/dashboard
+    image: ${COMPOSE_PROJECT_NAME}-dashboard
     networks:
-      - attlas-network
+      - spotmonitor-network
   api:
     build:
       context: ./services/api
       args:
-        - API_ARTIFACT
-        - API_HOSTNAME
-        - API_PORT
+        - SERVICES_API_ARTIFACT
+        - SERVICES_API_HOSTNAME
+        - SERVICES_API_PORT
     image: ${COMPOSE_PROJECT_NAME}-api
     networks:
-      - attlas-network
-    depends_on:
-      - rdbms
-      - graphdb
-  rdbms:
-    build:
-      context: ./dbs/rdbms
-    image: ${COMPOSE_PROJECT_NAME}-rdbms
-    networks:
-      - attlas-network
-    environment:
-      - MYSQL_ROOT_PASSWORD=${DBS_RDBMS_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DBS_RDBMS_DATABASE}
-      - MYSQL_USER=${DBS_RDBMS_USER}
-      - MYSQL_PASSWORD=${DBS_RDBMS_PASSWORD}
-  graphdb:
-    build: 
-      context: ./dbs/graphdb
-    image: ${COMPOSE_PROJECT_NAME}-graphdb
-    networks:
-      - attlas-network
-    volumes:
-      - "${PROJECT_HOME}/neo4j-data:/data"
+      - spotmonitor-network
