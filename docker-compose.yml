@@ -1,0 +1,44 @@
+version: '3'
+
+networks:
+  spotmonitor-network:
+
+services:
+  lb:
+    build:
+      context: ./services/lb
+      args:
+        - COMPOSE_PROJECT_NAME
+        - LB_STATIC_DASHBOARD_NAME
+        - LB_STATIC_DASHBOARD_NUM
+        - LB_SERVICES_API_NAME
+        - LB_SERVICES_API_NUM
+        - STATIC_DASHBOARD_PORT
+        - STATIC_DASHBOARD_PORTS
+        - SERVICES_API_PORT
+    image: ${COMPOSE_PROJECT_NAME}-lb
+    networks:
+      - spotmonitor-network
+    ports:
+      - ${STATIC_DASHBOARD_PORT}:${STATIC_DASHBOARD_PORT}
+      - ${STATIC_DASHBOARD_PORTS}:${STATIC_DASHBOARD_PORTS}
+      - ${SERVICES_API_PORT}:${SERVICES_API_PORT}
+    depends_on:
+      - dashboard
+      - api
+  dashboard:
+    build:
+      context: ./static/dashboard
+    image: ${COMPOSE_PROJECT_NAME}-dashboard
+    networks:
+      - spotmonitor-network
+  api:
+    build:
+      context: ./services/api
+      args:
+        - SERVICES_API_ARTIFACT
+        - SERVICES_API_HOSTNAME
+        - SERVICES_API_PORT
+    image: ${COMPOSE_PROJECT_NAME}-api
+    networks:
+      - spotmonitor-network
