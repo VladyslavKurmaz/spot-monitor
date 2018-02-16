@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.log4j.Logger;
+import com.owlike.genson.ext.jaxrs.GensonJsonConverter;
 
 /**
  * Main class.
@@ -18,34 +19,34 @@ import org.apache.log4j.Logger;
 public class Main {
 
 
-    private static final Logger logger = Logger.getLogger(Main.class);
+  private static final Logger logger = Logger.getLogger(Main.class);
 
-    // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://0.0.0.0:8080/";
+  // Base URI the Grizzly HTTP server will listen on
+  public static final String BASE_URI = "http://0.0.0.0:8080/";
 
-    /**
-     * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
-     * @return Grizzly HTTP server.
-     */
-    public static HttpServer createServer() {
-        logger.info("Grizzly server URL " + BASE_URI);
-        // create a resource config that scans for JAX-RS resources and providers
-        // in com.globallogic.pocs.spotmonitor package
-        final ResourceConfig rc = new ResourceConfig().packages("com.globallogic.pocs.spotmonitor");
-        //rc.register(GensonJsonConverter.class);
-        //rc.register(new CORSFilter());
+  /**
+   * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
+   * @return Grizzly HTTP server.
+   */
+  public static HttpServer createServer() {
+    logger.info("Grizzly server URL " + BASE_URI);
+    // create a resource config that scans for JAX-RS resources and providers
+    // in com.globallogic.pocs.spotmonitor package
+    final ResourceConfig rc = new ResourceConfig().packages("com.globallogic.pocs.spotmonitor");
+    rc.register(GensonJsonConverter.class);
+    //rc.register(new CORSFilter());
 
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
-    }
+    // create and start a new instance of grizzly http server
+    // exposing the Jersey application at BASE_URI
+    return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+  }
 
-    /**
-     * Main method.
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String[] args) throws IOException {
+  /**
+   * Main method.
+   * @param args
+   * @throws IOException
+   */
+  public static void main(String[] args) throws IOException {
 /*
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey app started with WADL available at "

@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class MyResourceTest {
+public class HealthCheckResourceTest {
 
     private HttpServer server;
     private WebTarget target;
@@ -42,7 +42,7 @@ public class MyResourceTest {
      */
     @Test
     public void testGetIt() {
-        String responseMsg = target.path("myresource").request().get(String.class);
-        assertEquals("Got it!", responseMsg);
+        String responseMsg = target.path("healthcheck").request().get(String.class);
+        assertEquals("live", responseMsg);
     }
 }
