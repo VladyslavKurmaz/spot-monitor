@@ -1,4 +1,4 @@
-package org.talan.services;
+package org.talan.services.api;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class MyResourceTest {
+public class HealthCheckResourceTest {
 
     private HttpServer server;
     private WebTarget target;
@@ -19,7 +19,7 @@ public class MyResourceTest {
     @Before
     public void setUp() throws Exception {
         // start the server
-        server = Main.startServer();
+        server = Main.createServer();
         // create the client
         Client c = ClientBuilder.newClient();
 
@@ -42,7 +42,7 @@ public class MyResourceTest {
      */
     @Test
     public void testGetIt() {
-        String responseMsg = target.path("myresource").request().get(String.class);
-        assertEquals("Got it!", responseMsg);
+        String responseMsg = target.path("healthcheck").request().get(String.class);
+        assertEquals("live", responseMsg);
     }
 }

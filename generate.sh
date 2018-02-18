@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 mvn archetype:generate \
     -DarchetypeArtifactId=jersey-quickstart-grizzly2 \
@@ -6,6 +6,6 @@ mvn archetype:generate \
     -DinteractiveMode=false \
     -DgroupId=org.talan.services \
     -DartifactId=api \
-    -Dpackage=org.talan.services \
+    -Dpackage=org.talan.services.api \
     -Dversion=18.2.0-SNAPSHOT \
     -DarchetypeVersion=2.17
