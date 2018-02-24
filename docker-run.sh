@@ -5,6 +5,5 @@ export SERVICES_GJ_ARTIFACT=$(mvn -q -Dexec.executable='echo' -Dexec.args='${pro
 docker build --build-arg SERVICES_GJ_HOST=$SERVICES_GJ_HOST \
              --build-arg SERVICES_GJ_PORT=$SERVICES_GJ_PORT \
              --build-arg SERVICES_GJ_ARTIFACT=$SERVICES_GJ_ARTIFACT \
-             -t tln-grizzly-jersey .
-docker run -p $SERVICES_GJ_PORT:$SERVICES_GJ_PORT --rm tln-grizzly-jersey
-docker rmi tln-grizzly-jersey
+             -t tln-grizzly-jersey:latest .
+docker run --rm -d -p $SERVICES_GJ_PORT:$SERVICES_GJ_PORT --name tln-grizzly-jersey tln-grizzly-jersey:latest
