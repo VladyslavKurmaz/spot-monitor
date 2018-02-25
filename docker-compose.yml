@@ -26,6 +26,7 @@ services:
     depends_on:
       - dashboard
       - api
+      - accumulator
   dashboard:
     build:
       context: ./static/dashboard
@@ -42,3 +43,15 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-api
     networks:
       - spotmonitor-network
+  accumulator:
+    build:
+      context: ./services/accumulator
+      args:
+        - SERVICES_ACCUMULATOR_ARTIFACT
+        - SERVICES_ACCUMULATOR_HOSTNAME
+        - SERVICES_ACCUMULATOR_PORT
+    image: ${COMPOSE_PROJECT_NAME}-accumulator
+    networks:
+      - spotmonitor-network
+    ports:
+      - ${SERVICES_ACCUMULATOR_PORT}:${SERVICES_ACCUMULATOR_PORT}
