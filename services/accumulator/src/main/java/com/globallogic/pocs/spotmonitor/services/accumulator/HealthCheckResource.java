@@ -1,4 +1,4 @@
-package org.talan.services.api;
+package com.globallogic.pocs.spotmonitor.services.accumulator;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

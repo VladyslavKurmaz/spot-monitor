@@ -1,4 +1,4 @@
-package org.talan.services.api;
+package com.globallogic.pocs.spotmonitor.services.accumulator;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -21,7 +21,7 @@ public class Main {
   private static final Logger logger = Logger.getLogger(Main.class);
 
   // Base URI the Grizzly HTTP server will listen on
-  public static final String BASE_URI = "http://0.0.0.0:8080/";
+  public static final String BASE_URI = "http://0.0.0.0:8081/";
 
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -31,7 +31,7 @@ public class Main {
     logger.info("Grizzly server URL " + BASE_URI);
     // create a resource config that scans for JAX-RS resources and providers
     // in com.globallogic.pocs.spotmonitor package
-    final ResourceConfig rc = new ResourceConfig().packages("org.talan.services.api");
+    final ResourceConfig rc = new ResourceConfig().packages("com.globallogic.pocs.spotmonitor.services.accumulator");
     rc.register(GensonJsonConverter.class);
     //rc.register(new CORSFilter());
 

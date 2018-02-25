@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.talan.services</groupId>
-  <artifactId>api</artifactId>
+  <groupId>com.globallogic.pocs.spotmonitor.services</groupId>
+  <artifactId>accumulator</artifactId>
   <packaging>jar</packaging>
   <version>18.2.0-SNAPSHOT</version>
-  <name>api</name>
+  <name>accumulator</name>
   <!-- -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <main.class>org.talan.services.api.Main</main.class>
+    <main.class>com.globallogic.pocs.spotmonitor.services</main.class>
     <jersey.version>2.26</jersey.version>
     <junit.version>4.11</junit.version>
     <log4j.version>1.2.17</log4j.version>
