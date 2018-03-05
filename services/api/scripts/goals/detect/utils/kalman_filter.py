@@ -1,4 +1,3 @@
-from __future__ import print_function
 import numpy as np
 
 
@@ -42,8 +41,6 @@ class KalmanFilter(object):
             R stands for measurement error (sensor noise covariance matrix)
         """
         self.R = np.eye(self.x.shape[0])  # observation noise matrix
-
-        self.history = list()
 
     def predict(self):
         """
@@ -94,25 +91,8 @@ class KalmanFilter(object):
 
         self.P = self.P - np.dot(np.dot(K, self.H), self.P)
 
-        self.history.append([self.x, self.P])
-        # TODO: Don't forget to delete this
-        self.history = self.history[:10]
-
         return self.x, self.P
 
     def update(self, observation):
         self.predict()
         return self.correct(z=observation)
-
-
-if __name__ == "__main__":
-    kf = KalmanFilter(x=np.array([[10], [10]]))
-    a = kf.update(observation=np.array([[10], [10]]))
-    observation = np.array([[[11], [10]], [[13], [12]], [[15], [13]], [[20], [17]], [[25], [20]]])
-    for i in range(observation.shape[0]):
-        pos, cov = kf.update(observation[i])
-        print("r_x = {0} r_y = {1}".format(observation[i][0][0], observation[i][1][0]))
-        print("k_x = {0} k_y = {1}".format(pos[0][0], pos[1][0]))
-        print("cov_x = {0} cov_y = {1}".format(cov[0][0], cov[1][1]))
-        print("________________________________________________________________________")
-
