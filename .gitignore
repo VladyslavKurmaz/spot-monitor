@@ -1,2 +1,11 @@
 .env
 .idea
+
+*.pyc
+*.params
+
+*.jpg
+*.JPEG
+*.jpeg
+
+**/*.log
