@@ -1,4 +1,4 @@
-from camera import Camera
+from .camera import Camera
 
 
 class CameraManager(object):
@@ -9,7 +9,8 @@ class CameraManager(object):
         return [item.id for item in self.camera_list]
 
     def add_camera(self, params):
-        inst = Camera(camera_ip=params['ip'], auth=[params['user'], params['password']],
+        inst = Camera(camera_ip=params['ip'],
+                      auth=[params['user'], params['password']],
                       endpoint=params['endpoint'])
 
         self.camera_list.append(inst)

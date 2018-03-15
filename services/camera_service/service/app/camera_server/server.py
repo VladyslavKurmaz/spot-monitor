@@ -1,7 +1,8 @@
+import json
+
 from flask import Blueprint, request, jsonify
 
-from src.camera_server import CameraManager
-
+from .src.camera_server import CameraManager
 
 manager = CameraManager()
 camera_server = Blueprint('camera_server', __name__)
@@ -26,13 +27,12 @@ def cameras():
     """
     if request.method == 'GET':
         cam_list = manager.get_cameras()
-
         return jsonify(cam_list)
     elif request.method == 'POST':
-        cameras_conf = request.data
+        cameras_conf = json.loads(request.json)
         for camera in cameras_conf['cameras']:
             manager.add_camera(camera)
 
-        return jsonify("Added")
+        return jsonify("Cameras added")
 
 

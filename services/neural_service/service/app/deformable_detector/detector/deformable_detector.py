@@ -15,7 +15,7 @@ os.environ['MXNET_ENABLE_GPU_P2P'] = '0'
 # path to symbol current file
 cur_path = os.path.abspath(os.path.dirname(__file__))
 # update config with experiment config yaml
-update_config(os.path.join(cur_path, '..', 'conf', "rfcn_coco_demo.yaml"))
+update_config(os.path.join(cur_path, '..', 'conf', "spot_resnet_v1_101_rfcn_dcn_end2end_ohem.yaml"))
 
 import mxnet as mx
 from core.tester import im_detect, Predictor
@@ -23,18 +23,20 @@ from symbols import *
 from utils.load_model import load_param
 from nms.nms import py_nms_wrapper, cpu_nms_wrapper, gpu_nms_wrapper
 
-import signal
-signal.signal(signal.SIGTERM, signal.SIG_DFL)
+import logging
+
+logger = logging.getLogger('gunicorn.error')
 
 
 class DeformableDetector(object):
     def __init__(self):
         sym_instance = eval(config.symbol + '.' + config.symbol)()
         self.symbol = sym_instance.get_symbol(config, is_train=False)
+        logger.debug("[DEFORMABLE DETECTOR] {0}".format(sym_instance))
         self.classes = ['box', 'robot']
         self.scales = config.SCALES[0]
         self.data_shape_conf = [[('data', (1, 3, self.scales[0], self.scales[1])), ('im_info', (1, 3))]]
-        self.arg_params, self.aux_params = load_param(os.path.join(cur_path, '..', 'conf', "rfcn_dcn_coco"), 0, process=True)
+        self.arg_params, self.aux_params = load_param(os.path.join(cur_path, '..', 'conf', "rfcn_voc"), 0, process=True)
 
         self.data_names = ['data', 'im_info']
         self.predictor = Predictor(self.symbol, ['data', 'im_info'], [],
