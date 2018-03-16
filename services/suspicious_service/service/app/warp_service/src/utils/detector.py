@@ -26,13 +26,13 @@ class Detector:
             for items in res[key]:
                 x = items[0] + items[2] / 2
                 y = items[3] + items[1] / 2
-                centers.append(np.array([x, y]))
+                centers.append(np.array([x, y], dtype=np.int32))
                 contours.append(np.array([
                     [[items[0], items[1]]],
                     [[items[2], items[1]]],
                     [[items[0], items[3]]],
                     [[items[2], items[3]]]
-                ]))
+                ], dtype=np.int32))
         return centers, contours
 
 

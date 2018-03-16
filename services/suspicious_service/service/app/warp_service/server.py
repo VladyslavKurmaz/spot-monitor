@@ -15,7 +15,6 @@ pipelines = {}
 def detect_susp():
     cam_id = json.loads(request.files['json'].read())['cam_id']
     im = request.files['img'].read()
-    print(cam_id)
     if cam_id not in pipelines.keys():
         pipelines[cam_id] = SpotMonitor(cam_id)
 

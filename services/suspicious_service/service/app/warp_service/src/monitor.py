@@ -43,6 +43,9 @@ class SpotMonitor:
             logger.debug("[SPOT MONITOR] [{}] Warped suspicious region: {} ".
                           format(self.id, bbox_warped))
 
+            susp_reg = [i.tolist() for i in susp_reg]
+            bbox_warped = [i.tolist() for i in bbox_warped]
+
             self.suspicious_regions = {'suspicious': susp_reg, "mapped": bbox_warped}
 
 
