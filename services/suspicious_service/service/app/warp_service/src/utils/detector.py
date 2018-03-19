@@ -30,9 +30,10 @@ class Detector:
                 contours.append(np.array([
                     [[items[0], items[1]]],
                     [[items[2], items[1]]],
-                    [[items[0], items[3]]],
-                    [[items[2], items[3]]]
+                    [[items[2], items[3]]],
+                    [[items[0], items[3]]]
                 ], dtype=np.int32))
+
         return centers, contours
 
 

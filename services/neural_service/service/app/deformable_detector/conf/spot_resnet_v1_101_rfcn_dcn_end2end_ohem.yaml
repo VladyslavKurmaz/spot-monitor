@@ -63,7 +63,7 @@ TRAIN:
   # typically we will use 4000 warmup step for single GPU on VOC
   warmup_step: 1000
   begin_epoch: 0
-  end_epoch: 8
+  end_epoch: 1
   model_prefix: 'rfcn_voc'
   # whether resume training
   RESUME: false
@@ -148,4 +148,4 @@ TEST:
   PROPOSAL_MIN_SIZE: 0
   # RCNN nms
   NMS: 0.3
-  test_epoch: 7
+  test_epoch: 1
