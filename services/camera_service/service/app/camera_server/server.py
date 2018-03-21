@@ -1,11 +1,11 @@
-import json
-
 from flask import Blueprint, request, jsonify
+from flask_cors import CORS
 
 from .src.camera_server import CameraManager
 
 manager = CameraManager()
 camera_server = Blueprint('camera_server', __name__)
+CORS(camera_server)
 
 
 @camera_server.route('/cameras', methods=['GET', 'POST'])
