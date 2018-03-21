@@ -29,9 +29,9 @@ def cameras():
         cam_list = manager.get_cameras()
         return jsonify(cam_list)
     elif request.method == 'POST':
-        cameras_conf = json.loads(request.json)
-        for camera in cameras_conf['cameras']:
-            manager.add_camera(camera)
+        camera_conf = json.loads(request.json)
+        # for camera in cameras_conf['cameras']:
+        manager.add_camera(camera_conf)
 
         return jsonify("Cameras added")
 
