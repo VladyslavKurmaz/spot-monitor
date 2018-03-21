@@ -6,6 +6,7 @@ import numpy as np
 from kalman_filter import KalmanFilter
 from scipy.optimize import linear_sum_assignment
 
+from anomaly_detector import *
 
 class Track(object):
     """
@@ -23,6 +24,10 @@ class Track(object):
         self.contour = cntr
         self.skipped_frames = 0
         self.too_long = 0
+        self.anomaly_detector = AnomalyDetectorManager(d=2, h=5, alpha=0.7)
+
+    def estimate(self):
+        return self.anomaly_detector.estimate(self.trace[-1])
 
 
 class Tracker(object):
@@ -140,15 +145,21 @@ class Tracker(object):
         suspicious_regions = []
 
         for item in self.tracks:
-            trc = item.trace
-            if len(trc) > 5:
-                dist = np.sqrt((trc[-1][0] - trc[-2][0]) ** 2 + (trc[-1][1] - trc[-2][1]) ** 2)
-                if dist < 5:
-                    item.too_long += 1
-                else:
-                    item.too_long = 0
+            anomaly_probability = item.estimate()
 
-            if item.too_long > 5:
+            if anomaly_probability > 0.95:
                 suspicious_regions.append(item.contour)
+
+        # for item in self.tracks:
+        #     trc = item.trace
+        #     if len(trc) > 5:
+        #         dist = np.sqrt((trc[-1][0] - trc[-2][0]) ** 2 + (trc[-1][1] - trc[-2][1]) ** 2)
+        #         if dist < 5:
+        #             item.too_long += 1
+        #         else:
+        #             item.too_long = 0
+        #
+        #     if item.too_long > 5:
+        #         suspicious_regions.append(item.contour)
 
         return self.tracks, suspicious_regions
