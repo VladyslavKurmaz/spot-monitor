@@ -13,24 +13,17 @@ def cameras():
     """
     Expected request data format:
         request.data = {
-            "cameras":
-            [
-                {
-                    'ip': "<ip_addr>",
-                    'user': "<username>",
-                    'password': "<password>",
-                    'endpoint': "<ip_addr_where_to_send_frames>"
-                }
-
-            ]
-        }
+            'ip': "<ip_addr>",
+            'user': "<username>",
+            'password': "<password>",
+            'endpoint': "<ip_addr_where_to_send_frames>"
+            }
     """
     if request.method == 'GET':
         cam_list = manager.get_cameras()
         return jsonify(cam_list)
     elif request.method == 'POST':
-        camera_conf = json.loads(request.json)
-        # for camera in cameras_conf['cameras']:
+        camera_conf = request.json
         manager.add_camera(camera_conf)
 
         return jsonify("Cameras added")
