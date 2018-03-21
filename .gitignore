@@ -7,3 +7,5 @@
 *.jpg
 *.JPEG
 *.jpeg
+
+**/*.log
