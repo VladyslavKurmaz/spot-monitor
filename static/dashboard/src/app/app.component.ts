@@ -26,6 +26,10 @@ export class AppComponent {
   newCamera: Camera = new Camera();
 
   constructor(private http: HttpClient){
+    this.newCamera.ip = 'http://127.0.0.1:8008';
+    this.newCamera.user = 'admin';
+    this.newCamera.password = 'admin';
+    this.newCamera.endpoint = 'http://127.0.0.1:8088';
   }
 
   ngOnInit() {
@@ -48,6 +52,7 @@ export class AppComponent {
     this.addCamera(this.newCamera).subscribe(
       data => {
         console.log(data);
+        this.addNew = false;
       }
     );
   }
@@ -65,7 +70,7 @@ export class AppComponent {
       console.error('An error occurred:', error.error.message);
       msg = error.error.message;
     } else if (error.error instanceof ProgressEvent) {
-      msg = 'Request initialization error, possibly CORS'
+      msg = 'Request initialization error [Camera host ip | possibly CORS]'
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
