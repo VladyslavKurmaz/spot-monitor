@@ -1,12 +1,14 @@
 import json
 
 from flask import Blueprint, request, jsonify
+from flask_cors import CORS
 
 
 from src.monitor import SpotMonitor
 
 
 suspicious = Blueprint('suspicious', __name__)
+CORS(suspicious)
 
 pipelines = {}
 
