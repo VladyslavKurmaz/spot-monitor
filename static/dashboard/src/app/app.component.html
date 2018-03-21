@@ -18,11 +18,49 @@
   <div class="row">
     <div class="col-sm-4">
       <ul class="list-group">
-        <li class="list-group-item active">Camera 1</li>
-        <li class="list-group-item">Camera 2</li>
-        <li class="list-group-item">Camera 3</li>
-        <li class="list-group-item">Camera 4</li>
-        <li class="list-group-item">Camera 5</li>
+        <li class="list-group-item bg-light">Cameras
+          <button *ngIf="!addNew" (click)="addNew = !addNew" type="button" class="btn btn-success btn-sm float-right">Add</button>
+          <button *ngIf="addNew" (click)="addNew = !addNew" type="button" class="btn btn-danger btn-sm float-right"><span aria-hidden="true">&times;</span></button>
+
+          <form *ngIf="addNew">
+            <hr/>
+            <div class="form-group row">
+              <label for="inputIP" class="col-sm-4 col-form-label">Camera IP</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="inputIP" placeholder="http://192.168.1.0:5554">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputUser" class="col-sm-4 col-form-label">User name</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="inputIP" placeholder="admin">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputPassword" class="col-sm-4 col-form-label">Password</label>
+              <div class="col-sm-8">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputEndpoint" class="col-sm-4 col-form-label">Endpoint</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="inputEndpoint" placeholder="http://192.168.1.1:9900">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <button type="submit" class="btn btn-success btn-sm float-right">Create</button>
+              </div>
+            </div>
+          </form>
+        </li>
+        <li class="list-group-item "  *ngFor="let camera of cameras">
+          {{camera.ip}}
+          <button type="button" class="close float-right">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </li>
       </ul>
     </div>
     <div class="col-sm-8">
