@@ -2,10 +2,7 @@ FROM ogvalt/basic:cpu-latest
 
 RUN pip install gunicorn requests
 
-COPY ./service/ /workspace/
-
-WORKDIR /workspace
-
-RUN chmod 777 start.sh
+WORKDIR /scripts
+COPY ./scripts/ /scripts/
 
 CMD ./start.sh

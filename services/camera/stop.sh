@@ -1,3 +1,4 @@
 #!/bin/bash -e
 export $(cat ./../../.env | grep -v ^# | xargs)
-ng build
+docker stop spot-monitor-camera
+docker rmi spot-monitor-camera
