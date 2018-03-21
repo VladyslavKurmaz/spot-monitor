@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 app.config.from_object('conf')
 
-from camera_server.server import camera_server
+from .warp_service.server import suspicious
 
-app.register_blueprint(camera_server)
+app.register_blueprint(suspicious)
 

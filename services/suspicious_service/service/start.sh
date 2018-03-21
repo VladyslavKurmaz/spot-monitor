@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-gunicorn --bind 0.0.0.0:8000 wsgi:app
+gunicorn -c ./gunicorn.conf wsgi:app

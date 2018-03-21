@@ -3,7 +3,7 @@ import logging
 import numpy as np
 
 
-from utils.kalman_filter import KalmanFilter
+from kalman_filter import KalmanFilter
 from scipy.optimize import linear_sum_assignment
 
 
