@@ -6,7 +6,7 @@ class CameraManager(object):
         self.camera_list = []
 
     def get_cameras(self):
-        return [item.id for item in self.camera_list]
+        return [{"id": item.id, "endpoint": item.endpoint} for item in self.camera_list]
 
     def add_camera(self, params):
         inst = Camera(camera_ip=params['ip'],
