@@ -5,6 +5,7 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, retry } from 'rxjs/operators';
 
 
+import { hosts } from './../hosts';
 import { Camera } from './models/camera'
 
 const httpOptions = {
@@ -20,7 +21,7 @@ const httpOptions = {
 })
 export class AppComponent {
   errorMessage = '';
-  cameras: Camera[] = [];//[{ip:'127.0.0.1:9900',user:'admin',password:'admin',endpoint:'9990'}];
+  cameras: Camera[] = [];
   addNew: Boolean = false;
   newCamera: Camera = new Camera();
 
@@ -28,13 +29,14 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.http.get<any[]>('http://46.101.7.84:8000/cameras')
+    this.http.get<any[]>(hosts.cameraHost + '/cameras')
       .subscribe(
         data => {
           //
           data.forEach(function (value) {
             let c = new Camera();
-            c.ip = value;
+            c.ip = value.id;
+            c.endpoint = value.endpoint;
             this.cameras.push(c);
           }.bind(this));
         },
@@ -50,7 +52,7 @@ export class AppComponent {
     );
   }
   private addCamera(camera: Camera): Observable<Camera> {
-    return this.http.post<Camera>('http://46.101.7.84:8000/cameras', camera, httpOptions)
+    return this.http.post<Camera>(hosts.cameraHost + '/cameras', camera, httpOptions)
       .pipe(
         //catchError(this.handleError('addCamera'))
       );
