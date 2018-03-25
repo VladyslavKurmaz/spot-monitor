@@ -58,6 +58,34 @@
               ]
             }
           }
+        },
+        {
+          "id":"neural",
+          "stages":{
+            "build":{
+              "shell":[
+                "export $(cat ./../../.env | grep -v ^# | xargs)",
+                "docker build -t spot-monitor-neural ."
+              ]
+            },
+            "serve":{
+              "shell":[
+              ]
+            },
+            "run":{
+              "shell":[
+                "export $(cat ./../../.env | grep -v ^# | xargs)",
+                "docker run -d --rm -p ${SERVICES_NEURAL_PORT}:${SERVICES_NEURAL_PORT} --name spot-monitor-neural spot-monitor-neural"
+              ]
+            },
+            "stop":{
+              "shell":[
+                "export $(cat ./../../.env | grep -v ^# | xargs)",
+                "docker stop spot-monitor-neural",
+                "docker rmi spot-monitor-neural"
+              ]
+            }
+          }
         }
       ]
     },
