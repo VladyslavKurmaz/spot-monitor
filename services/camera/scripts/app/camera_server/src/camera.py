@@ -7,7 +7,7 @@ import json
 import requests
 import cv2
 
-logger = logging.getLogger('gunicorn.error')
+logger = logging.getLogger(__name__)
 
 
 class Camera(Thread):
@@ -15,26 +15,33 @@ class Camera(Thread):
         super(Camera, self).__init__()
         self.stopped = False
         self.id = camera_ip
+        self.log = "[{}] ".format(self.id)
+        self.error_counter = 0
 
         self.device_url = "rtsp://{}:{}@{}/Streaming/Channels/101".format(auth[0], auth[1], camera_ip)
         self.cam = cv2.VideoCapture(self.device_url)
-
         self.endpoint = endpoint
 
-        self.error_counter = 0
+    def _run(self):
+        """
+            _run function for compatibility with greenlet
+        """
+        self.run()
 
     def run(self):
-
+        """
+            run function for compatibility with thread
+        """
         while not self.stopped:
 
             if self.error_counter > 50:
-                logger.debug("[CAMERA] [{}] Error counter exceeded".format(self.id))
+                logger.error(self.log + "Error counter exceeded: {}".format(self.error_counter))
                 break
 
             ret, frame = self.cam.read()
 
             if not ret:
-                logger.debug("[CAMERA] [{}] Couldn't obtain frame".format(self.id))
+                logger.warning(self.log + "Couldn't obtain frame, error counter {}".format(self.error_counter))
                 self.error_counter += 1
                 time.sleep(1)
                 continue
@@ -46,9 +53,9 @@ class Camera(Thread):
             }
             try:
                 response = requests.post(self.endpoint, files=files)
-                logger.debug("[CAMERA] [{}] {}".format(self.id, response))
+                logger.debug(self.log + "Responce code: {}".format(response.status_code))
             except Exception as e:
-                logger.debug("[CAMERA] [{}] Consuming service error: {}".format(self.id, e))
+                logger.error(self.log + "Consuming service error: {}".format(e))
                 self.error_counter += 1
                 time.sleep(1)
 
@@ -59,4 +66,4 @@ class Camera(Thread):
 
     def release(self):
         self.cam.release()
-        logger.debug("[CAMERA] [{}] Released".format(self.id))
+        logger.info(self.log + "Camera released")
