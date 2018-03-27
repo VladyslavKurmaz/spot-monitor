@@ -26,8 +26,7 @@ class SpotMonitor:
     def process(self, im):
         with self.lock:
             filtered_centers, cntrs = self.detector.detect(im=im)
-            logger.debug("[SPOT MONITOR] [{}] Centers: {} Contours: {}".
-                          format(self.id, filtered_centers, cntrs))
+            logger.debug("[SPOT MONITOR] [{}] Centers: {} Contours: {}".format(self.id, len(filtered_centers), len(cntrs)))
 
             nparr = np.frombuffer(im, np.uint8)
             im = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -35,13 +34,13 @@ class SpotMonitor:
             tracks, susp_reg = self.tracker.track(centers=filtered_centers, cntrs=cntrs)
 
             logger.debug("[SPOT MONITOR] [{}] Suspicious region: {} ".
-                          format(self.id, susp_reg))
+                          format(self.id, len(susp_reg)))
 
             bbox_warped = self.warper.warp_image(img_shape=[im.shape[0], im.shape[1]],
                                                  coordinates=susp_reg, camera_id=1)
 
             logger.debug("[SPOT MONITOR] [{}] Warped suspicious region: {} ".
-                          format(self.id, bbox_warped))
+                          format(self.id, len(bbox_warped)))
 
             susp_reg = [i.tolist() for i in susp_reg]
             bbox_warped = [i.tolist() for i in bbox_warped]

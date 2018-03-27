@@ -12,35 +12,43 @@ class CameraManager(object):
         logger.debug("Get camera with identifier {}".format(id))
         for item in self.camera_list:
             if item.id == id:
-                return {"id": item.id, "endpoint": item.endpoint}
+                return {"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint}
             else:
                 return None
 
     def get_cameras(self):
-        return [{"id": item.id, "endpoint": item.endpoint} for item in self.camera_list]
+        return [{"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint}
+                for item in self.camera_list]
 
     def add_camera(self, params):
+        idn = int(params['ip'].split(':')[0].replace(".", ""))
         for item in self.camera_list:
-            if item.id == params['ip']:
+            if item.id == idn:
+                cam = self.get_camera(idn)
                 logger.info("Camera instance already exists")
-                return False
+                return False, cam
 
-        cam = Camera(camera_ip=params['ip'],
+        cam = Camera(idn=idn, camera_ip=params['ip'],
                      auth=[params['user'], params['password']],
                      endpoint=params['endpoint'])
+
         logger.info("Camera instance created")
         self.camera_list.append(cam)
         cam.start()
         logger.info("Camera instance started")
-        return True
+
+        cam = self.get_camera(idn)
+
+        return True, cam
 
     def delete_camera(self, id):
         for idx, item in enumerate(self.camera_list):
             if item.id == id:
+                obj = self.get_camera(id)
                 self.camera_list[idx].stop()
                 self.camera_list.pop(idx)
                 logger.info("ID: [{}] Camera instance deleted".format(id))
-                return True
+                return True, obj
         logger.info("ID: [{}] No such camera instance".format(id))
-        return False
+        return False, {}
 

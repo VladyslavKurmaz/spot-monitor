@@ -11,13 +11,15 @@ logger = logging.getLogger(__name__)
 
 
 class Camera(Thread):
-    def __init__(self, camera_ip, auth, endpoint):
+    def __init__(self, idn, camera_ip, auth, endpoint):
         super(Camera, self).__init__()
         self.stopped = False
-        self.id = camera_ip
-        self.log = "[{}] ".format(self.id)
         self.error_counter = 0
 
+        self.id = idn
+        self.log = "[{}] ".format(self.id)
+
+        self.video_source = camera_ip
         self.device_url = "rtsp://{}:{}@{}/Streaming/Channels/101".format(auth[0], auth[1], camera_ip)
         self.cam = cv2.VideoCapture(self.device_url)
         self.endpoint = endpoint

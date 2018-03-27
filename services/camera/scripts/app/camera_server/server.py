@@ -8,9 +8,22 @@ manager = CameraManager()
 
 camera_server = Blueprint('camera_server', __name__)
 
-api = Api(camera_server, catch_all_404s=True)
+errors = {
+    'NotFound':
+        {
+            'code': False,
+            'message': "404. Resource not found. Try /cameras /cameras/<int:id>",
+            'data': []
+        }
+}
+
+api = Api(camera_server, catch_all_404s=True, errors=errors)
 
 CORS(camera_server)
+
+
+def construct_response(code, message, data):
+    return {"code": code, "message": message, "data": data}
 
 
 class CameraAPI(Resource):
@@ -18,26 +31,38 @@ class CameraAPI(Resource):
         API for single camera management
     """
     def get(self, idf):
-        ret = manager.get_camera(str(idf))
+        ret = manager.get_camera(idf)
         if ret is None:
-            return jsonify({"Camera": ["No such camera", False, {}]})
+            response = jsonify(construct_response(False, "No such camera", []))
+            response.status_code = 404
         else:
-            return jsonify({"Camera": ["Success", True, manager.get_camera(idf)]})
+            response = jsonify(construct_response(True, "Success", [ret]))
+            response.status_code = 200
+
+        return response
 
     def delete(self, idf):
-        ret = manager.delete_camera(idf)
+        ret, obj = manager.delete_camera(idf)
         if ret:
-            return jsonify({"Camera": ["Deleted", True, idf]})
+            response = jsonify(construct_response(True, "Deleted", [obj]))
+            response.status_code = 200
         else:
-            return jsonify({"Camera": ["No such camera", False, idf]})
+            response = jsonify(construct_response(False, "No such camera", []))
+            response.status_code = 404
+
+        return response
 
     def put(self, idf):
         # TODO: implement put request
-        return jsonify({"Camera": ["NotImplemented", False, idf]})
+        response = jsonify(construct_response(False, "NotImplemented", [idf]))
+        response.status_code = 404
+        return response
 
     def patch(self, idf):
         # TODO: implement patch request
-        return jsonify({"Camera": ["NotImplemented", False, idf]})
+        response = jsonify(construct_response(False, "NotImplemented", [idf]))
+        response.status_code = 404
+        return response
 
 
 class CamerasAPI(Resource):
@@ -46,18 +71,23 @@ class CamerasAPI(Resource):
     """
     def get(self):
         cam_list = manager.get_cameras()
-        return jsonify(cam_list)
+        response = jsonify(construct_response(True, "Success", cam_list))
+        response.status_code = 200
+        return response
 
     def post(self):
         camera_conf = request.json
-        ret = manager.add_camera(camera_conf)
+        ret, cam = manager.add_camera(camera_conf)
         if ret:
-            return jsonify({"Camera": ["Success", True, camera_conf['ip']]})
+            response = jsonify(construct_response(True, "Camera added", [cam]))
+            response.status_code = 201
         else:
-            return jsonify({"Camera": ["Already exists", False, camera_conf['ip']]})
+            response = jsonify(construct_response(False, "Camera already exists", [cam]))
+            response.status_code = 404
+        return response
 
 
-api.add_resource(CameraAPI, '/cameras/<string:idf>')
+api.add_resource(CameraAPI, '/cameras/<int:idf>')
 api.add_resource(CamerasAPI, '/cameras', '/cameras/')
 
 
