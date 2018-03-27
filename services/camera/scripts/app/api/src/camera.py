@@ -20,9 +20,29 @@ class Camera(Thread):
         self.log = "[{}] ".format(self.id)
 
         self.video_source = camera_ip
-        self.device_url = "rtsp://{}:{}@{}/Streaming/Channels/101".format(auth[0], auth[1], camera_ip)
-        self.cam = cv2.VideoCapture(self.device_url)
-        self.endpoint = endpoint
+        self.username = auth[0]
+        self.password = auth[1]
+        self.dst_url = endpoint
+
+        self.cam = None
+
+    def configure_stream(self):
+        """
+        Configure stream source handler and endpoint where to send frames
+        :return:
+        """
+        stream_src = "rtsp://{}:{}@{}/Streaming/Channels/101".format(self.username, self.password, self.video_source)
+        try:
+            self.cam = cv2.VideoCapture(stream_src)
+        except Exception as e:
+            logger.error(self.log + "cv2.VideoCapture encountered an error: {}".format(e))
+            self.stop()
+
+        try:
+            requests.post()
+        except Exception as e:
+            logger.error(self.log + "Couldn't create resource: {}".format(e))
+            self.stop()
 
     def _run(self):
         """
@@ -34,6 +54,8 @@ class Camera(Thread):
         """
             run function for compatibility with thread
         """
+        self.configure_stream()
+
         while not self.stopped:
 
             if self.error_counter > 50:

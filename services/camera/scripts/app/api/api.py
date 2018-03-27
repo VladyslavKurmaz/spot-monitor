@@ -2,11 +2,11 @@ from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
-from .src.camera_server import CameraManager
+from .src.camera_manager import CameraManager
 
 manager = CameraManager()
 
-camera_server = Blueprint('camera_server', __name__)
+camera_server = Blueprint('api', __name__)
 
 errors = {
     'NotFound':
@@ -83,7 +83,7 @@ class CamerasAPI(Resource):
             response.status_code = 201
         else:
             response = jsonify(construct_response(False, "Camera already exists", [cam]))
-            response.status_code = 404
+            response.status_code = 400
         return response
 
 

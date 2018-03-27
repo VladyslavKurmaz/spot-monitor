@@ -1,8 +1,7 @@
-import logging
+from logging.config import fileConfig
+fileConfig("./logging.conf")
+
 from app import app
 
-gunicorn_logger = logging.getLogger('gunicorn.error')
-app.logger.handlers = gunicorn_logger.handlers
-
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=8000)

@@ -1,9 +1,8 @@
 FROM ogvalt/basic:cpu-latest
 
-RUN pip install gunicorn requests flask_cors
+RUN pip install gunicorn requests gevent
 
-COPY ./service/ /workspace/
-
-WORKDIR /workspace
+WORKDIR /scripts
+COPY ./scripts/ /scripts/
 
 CMD ["gunicorn", "-c", "./gunicorn.conf", "wsgi:app"]
