@@ -8,16 +8,21 @@ class CameraManager(object):
     def __init__(self):
         self.camera_list = []
 
+    def get_stream(self, id):
+        for item in self.camera_list:
+            if item.id == id:
+                return item.get_frame
+
     def get_camera(self, id):
         logger.debug("Get camera with identifier {}".format(id))
         for item in self.camera_list:
             if item.id == id:
-                return {"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint}
+                return {"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint, 'health': not item.stopped}
             else:
                 return None
 
     def get_cameras(self):
-        return [{"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint}
+        return [{"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint, 'health': not item.stopped}
                 for item in self.camera_list]
 
     def add_camera(self, params):
