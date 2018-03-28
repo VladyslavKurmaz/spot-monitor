@@ -39,7 +39,7 @@ class SuspiciousAPI(Resource):
         else:
             ret, susp = monitor_manager.get_region(idf)
             if ret:
-                return construct_response(True, "Suspicious region", [susp], 200)
+                return construct_response(True, "Suspicious regions", [susp], 200)
             else:
                 return construct_response(False, "No such monitor", [], 404)
 
