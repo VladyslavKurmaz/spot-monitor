@@ -6,7 +6,7 @@ from .src.camera_manager import CameraManager
 
 manager = CameraManager()
 
-camera_server = Blueprint('api', __name__)
+camera_server = Blueprint('camera_server', __name__)
 
 errors = {
     'NotFound':
