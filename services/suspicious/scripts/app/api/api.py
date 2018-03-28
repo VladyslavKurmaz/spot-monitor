@@ -35,7 +35,7 @@ class SuspiciousAPI(Resource):
     def get(self, idf=None):
         if idf is None:
             all_regions = monitor_manager.get_all()
-            return construct_response(True, "All monitors", all_regions, 200)
+            return construct_response(True, "All suspicious region", all_regions, 200)
         else:
             ret, susp = monitor_manager.get_region(idf)
             if ret:
@@ -45,38 +45,25 @@ class SuspiciousAPI(Resource):
 
     def post(self, idf=None):
         if idf is None:
-            cam_id = request.json()
+            cam_id = request.json['cam_id']
             if monitor_manager.create_monitor(cam_id):
-                return construct_response(True, "Monitor created", [], 201)
+                return construct_response(True, "Monitor created", [{"endpoint": "/{}".format(cam_id)}], 201)
             else:
                 return construct_response(False, "Monitor already exists", [], 400)
         else:
             im = request.data
-            ret, susp = monitor_manager.process_monitor(idf, im)
+            ret, susp = monitor_manager.process_img(idf, im)
             if ret:
                 return construct_response(True, "Processed", [susp], 200)
             else:
                 return construct_response(False, "No such monitor", [], 404)
+            
+    def delete(self, idf):
+        ret, obj = monitor_manager.delete_monitor(idf)
+        if ret:
+            return construct_response(True, "Monitor deleted", [obj], 200)
+        else:
+            return construct_response(False, "No such monitor", [obj], 404)
 
 
 api.add_resource(SuspiciousAPI, '/suspicious', '/suspicious/', '/suspicious/<int:idf>')
-
-# @suspicious.route('/detect_susp', methods=['POST'])
-# def detect_susp():
-#     cam_id = json.loads(request.files['json'].read())['cam_id']
-#     im = request.files['img'].read()
-#     if cam_id not in pipelines.keys():
-#         pipelines[cam_id] = SpotMonitor(cam_id)
-#
-#     pipelines[cam_id].process(im)
-#
-#     return jsonify("Processed")
-#
-#
-# @suspicious.route('/get_suspicious', methods=['GET'])
-# def get_suspicous():
-#     cam_id = json.loads(request.data)['cam_id']
-#     if cam_id not in pipelines.keys():
-#         return jsonify("No such cam_id")
-#     else:
-#         return jsonify(pipelines[cam_id].suspicious_regions)

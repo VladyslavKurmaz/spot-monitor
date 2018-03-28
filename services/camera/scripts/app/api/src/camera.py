@@ -92,6 +92,7 @@ class Camera(Thread):
         self.username = auth[0]
         self.password = auth[1]
         self.dst_url = endpoint
+        self.stream_url = None
         self.endpoint = None
 
         self.event = CameraEvent()
@@ -109,7 +110,9 @@ class Camera(Thread):
         """
         try:
             response = requests.post(self.dst_url, json={"cam_id": self.id})
-            logger.debug(self.log + "Response code: {}".format(response.status_code))
+            json_resp = response.json()
+            logger.debug(self.log + "Response : {}".format(json_resp))
+            self.endpoint = self.dst_url + json_resp['data'][0]['endpoint']
 
             while self.get_frame() is None:
                 time.sleep(0)
@@ -117,7 +120,7 @@ class Camera(Thread):
             logger.debug(self.log + "Configured")
         except Exception as e:
             logger.error(self.log + "Unable to create resource: {}".format(e))
-            # self.stop()
+            self.stop()
 
     def _thread(self):
         """
@@ -127,20 +130,19 @@ class Camera(Thread):
         frames_iterator = stream(self.id, self.username, self.password, self.video_source)
         im = None
 
-        while True:
+        while not self.stopped:
             try:
                 im = next(frames_iterator)
             except Exception as e:
                 logging.error(self.log + "Error in background thread: {}".format(e))
                 self.stop()
 
-                if self.stopped:
-                    frames_iterator.close()
-                    return
-
             self.frame = im
             self.event.set()
             time.sleep(0)
+
+        frames_iterator.close()
+        logger.debug(self.log + "Background camera stream stopped")
 
     def get_frame(self):
         self.event.wait()
@@ -175,6 +177,12 @@ class Camera(Thread):
                 logger.error(self.log + "Error counter: {}".format(self.error_counter))
                 self.error_counter += 1
                 time.sleep(1)
+
+        try:
+            response = requests.delete(self.endpoint)
+            logger.info(self.log + "Delete response: {}".format(response.json()))
+        finally:
+            return
 
     def stop(self):
         self.stopped = True

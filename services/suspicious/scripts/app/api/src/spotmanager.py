@@ -26,10 +26,19 @@ class SpotManager:
             self.monitors[idf] = SpotMonitor(cam_id=idf)
             return True
 
-    def process_monitor(self, idf, img):
+    def delete_monitor(self, idf):
+        logger.debug("delete_monitor request with identifier {}".format(idf))
+        if idf in self.monitors.keys():
+            del self.monitors[idf]
+            return True, {'id': idf}
+        else:
+            return False, {}
+
+    def process_img(self, idf, img):
         logger.debug("process_monitor request with identifier {}".format(idf))
         if idf in self.monitors.keys():
             self.monitors[idf].process(img)
             return True, self.monitors[idf].suspicious_regions
         else:
             return False, {}
+
