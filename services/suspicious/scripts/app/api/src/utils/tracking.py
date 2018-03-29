@@ -8,6 +8,7 @@ from scipy.optimize import linear_sum_assignment
 
 from anomaly_detector import *
 
+
 class Track(object):
     """
         Class that describe track

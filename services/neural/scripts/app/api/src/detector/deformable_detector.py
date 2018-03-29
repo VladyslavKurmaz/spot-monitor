@@ -25,16 +25,17 @@ from nms.nms import py_nms_wrapper, cpu_nms_wrapper, gpu_nms_wrapper
 
 import logging
 
-logger = logging.getLogger('gunicorn.error')
+logger = logging.getLogger(__name__)
 
 
 class DeformableDetector(object):
     def __init__(self):
         sym_instance = eval(config.symbol + '.' + config.symbol)()
         self.symbol = sym_instance.get_symbol(config, is_train=False)
-        logger.debug("[DEFORMABLE DETECTOR] {0}".format(sym_instance))
         self.classes = ['box', 'robot']
+        logging.debug("Classes: {}".format(self.classes))
         self.scales = config.SCALES[0]
+        logging.debug("Scales: {}".format(self.scales))
         self.data_shape_conf = [[('data', (1, 3, self.scales[0], self.scales[1])), ('im_info', (1, 3))]]
         self.arg_params, self.aux_params = load_param(os.path.join(cur_path, '..', 'conf', "rfcn_voc"), 0, process=True)
 
@@ -46,6 +47,7 @@ class DeformableDetector(object):
                 arg_params=self.arg_params, aux_params=self.aux_params
                 )
         self.nms = gpu_nms_wrapper(config.TEST.NMS, 0)
+        logging.info("Deformable detector initialized")
 
     def predict(self, im):
         im, im_scale = resize(im, self.scales[0], self.scales[1],
@@ -73,7 +75,7 @@ class DeformableDetector(object):
         res = {}
         for idx, cls in enumerate(self.classes):
             res['{}'.format(cls)] = dets_nms[idx].tolist()
-
+        logging.debug("Predictions: {}".format(res))
         return res
 
 

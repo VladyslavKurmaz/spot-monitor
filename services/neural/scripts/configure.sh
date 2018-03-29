@@ -1,7 +1,17 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-cd ./app/deformable_detector/libs/
-sh ./init.sh
+_term() {
+  echo "Caught SIGTERM signal!"
+  kill -2 "$child" 2>/dev/null
+}
 
-cd /workspace/
-sh ./start.sh
+cd ./app/api/src/libs/
+sh init.sh
+
+trap _term SIGINT
+
+cd /scripts/
+gunicorn -c ./gunicorn.conf wsgi:app &
+
+child=$!
+wait "$child"

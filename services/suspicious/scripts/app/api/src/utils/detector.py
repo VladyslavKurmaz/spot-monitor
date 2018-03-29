@@ -10,9 +10,9 @@ logger = logging.getLogger('gunicorn.error')
 
 class Detector:
     def __init__(self):
-        self.endpoint = "http://" + os.environ['AWS_GPU_IP'] + ":8000/detect"
+        # self.endpoint = "http://" + os.environ['AWS_GPU_IP'] + ":8000/detect"
         self.headers = {'content-type': 'image/jpeg'}
-        logger.debug("[DETECTOR] Endpoint: {}".format(self.endpoint))
+        # logger.debug("[DETECTOR] Endpoint: {}".format(self.endpoint))
 
     def detect(self, im):
         response = requests.post(self.endpoint, data=im, headers=self.headers)

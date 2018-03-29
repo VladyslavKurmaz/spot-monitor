@@ -8,12 +8,13 @@ import cv2
 import tensorflow as tf
 
 
-logger = logging.getLogger('gunicorn.error')
+logger = logging.getLogger(__name__)
 
 max_len = 1000.0
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
-model_path = os.path.join(cur_path, '..', 'model', 'resnet50_pascal_05.pb')
+model_path = os.path.join(cur_path, '..', 'models', 'resnet50_pascal_05.pb')
+
 
 def load_graph(frozen_graph_filename):
     # We load the protobuf file from the disk and parse it to retrieve the
@@ -29,6 +30,7 @@ def load_graph(frozen_graph_filename):
         tf.import_graph_def(graph_def, name="prefix")
     return graph
 
+
 class RetinaDetector(object):
     def __init__(self):
         graph = load_graph(model_path)
@@ -36,6 +38,8 @@ class RetinaDetector(object):
         self.y_label = graph.get_tensor_by_name('prefix/nms/ExpandDims_2:0')
         with tf.Session(graph=graph) as sess:
             self.model = sess
+
+        logger.debug("RetinaNet loaded")
 
     def predict(self, im):
         alpha = max_len / max(im.shape)
@@ -49,13 +53,14 @@ class RetinaDetector(object):
                 new_det.append(i)
 
         result = {'box': [], 'robot': []}
-        name_map = {0: 'box', 1: 'robot'}
+        name_map = ['box', 'robot']
         for i in new_det:
             name = name_map[np.argmax(i[4:])]
             detect = [float(i) for i in ((i[:4] / alpha).tolist() + [i[4:].max()])]
-            tmp_lsit = result[name]
-            tmp_lsit.append(detect)
+            result[name].append(detect)
+
         return result
+
 
 class DetectorWrapper(Thread):
     def __init__(self, q_task, q_result):
