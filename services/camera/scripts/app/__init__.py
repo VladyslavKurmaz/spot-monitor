@@ -4,6 +4,9 @@ app = Flask(__name__)
 
 app.config.from_object('conf')
 
-from .camera_server.server import camera_server
+from api.api import camera_server
 
 app.register_blueprint(camera_server)
+
+
+

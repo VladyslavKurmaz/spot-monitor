@@ -8,7 +8,7 @@ from skimage import transform as tf
 
 
 cur_path = os.path.abspath(os.path.dirname(__file__))
-conf_path = os.path.join(cur_path, 'warper', 'conf.yaml')
+conf_path = os.path.join(cur_path, 'warp_conf', 'conf.yaml')
 
 
 class Warper:
