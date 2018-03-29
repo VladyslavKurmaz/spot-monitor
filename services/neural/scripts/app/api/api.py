@@ -6,12 +6,12 @@ import numpy as np
 from src.detector.deformable_detector import DeformableDetector
 # from src.detector.retina_detector import RetinaDetector
 
-detector = Blueprint('detector', __name__)
+detector_api = Blueprint('detector_api', __name__)
 
 detector = DeformableDetector()
 
 
-@detector.route('/detect', methods=['POST'])
+@detector_api.route('/detect', methods=['POST'])
 def detect():
     nparr = np.frombuffer(request.data, np.uint8)
     im = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
