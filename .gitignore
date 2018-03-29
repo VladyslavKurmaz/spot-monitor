@@ -9,3 +9,6 @@
 *.jpeg
 
 **/*.log
+
+*.pb
+*.zip
