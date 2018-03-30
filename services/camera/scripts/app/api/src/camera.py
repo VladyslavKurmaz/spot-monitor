@@ -92,7 +92,7 @@ class Camera(Thread):
         self.username = auth[0]
         self.password = auth[1]
         self.dst_url = endpoint
-        self.stream_url = None
+        self.stream_url = "stream/" + str(self.id)
         self.endpoint = None
 
         self.event = CameraEvent()
