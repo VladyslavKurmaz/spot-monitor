@@ -86,6 +86,34 @@
               ]
             }
           }
+        },
+        {
+          "id":"suspicious",
+          "stages":{
+            "build":{
+              "shell":[
+                "export $(cat ./../../.env | grep -v ^# | xargs)",
+                "docker build -t spot-monitor-suspicious ."
+              ]
+            },
+            "serve":{
+              "shell":[
+              ]
+            },
+            "run":{
+              "shell":[
+                "export $(cat ./../../.env | grep -v ^# | xargs)",
+                "docker run -d --rm -p ${SERVICES_SUSPICIOUS_PORT}:${SERVICES_SUSPICIOUS_PORT} --name spot-monitor-suspicious spot-monitor-suspicious"
+              ]
+            },
+            "stop":{
+              "shell":[
+                "export $(cat ./../../.env | grep -v ^# | xargs)",
+                "docker stop spot-monitor-suspicious",
+                "docker rmi spot-monitor-suspicious"
+              ]
+            }
+          }
         }
       ]
     },
