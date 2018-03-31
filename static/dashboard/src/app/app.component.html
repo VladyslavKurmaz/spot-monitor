@@ -62,9 +62,9 @@
             </div>
           </div>
         </li>
-        <li class="list-group-item "  *ngFor="let camera of cameras">
-          {{camera.ip}}
-          <button type="button" class="close float-right">
+        <li class="list-group-item active" [ngClass]="{'active': selectedCamera == camera}" (click)="onSelectCamera(camera)"  *ngFor="let camera of cameras; let i = index">
+          {{camera.id}}
+          <button (click)="onDeleteCamera($event, i, camera)" type="button" class="close float-right">
             <span aria-hidden="true">&times;</span>
           </button>
         </li>
@@ -72,7 +72,7 @@
     </div>
     <div class="col-sm-8">
       <div class="text-center">
-        <img src="../assets/images/deck.jpg" class="img-fluid" alt="...">
+        <img [src]="selectedStream" class="img-fluid" alt="...">
       </div>
     </div>
   </div>
