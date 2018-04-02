@@ -37,7 +37,7 @@ class DeformableDetector(object):
         self.scales = config.SCALES[0]
         logging.debug("Scales: {}".format(self.scales))
         self.data_shape_conf = [[('data', (1, 3, self.scales[0], self.scales[1])), ('im_info', (1, 3))]]
-        self.arg_params, self.aux_params = load_param(os.path.join(cur_path, '..', 'conf', "rfcn_voc"), 0, process=True)
+        self.arg_params, self.aux_params = load_param(os.path.join(cur_path, '..', 'models', "rfcn_voc"), 0, process=True)
 
         self.data_names = ['data', 'im_info']
         self.predictor = Predictor(self.symbol, ['data', 'im_info'], [],

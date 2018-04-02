@@ -18,21 +18,29 @@ class CameraManager(object):
         logger.debug("Get camera with identifier {}".format(id))
         for item in self.camera_list:
             if item.id == id:
-                return {"id": item.id, "video_source": item.video_source,
-                        "endpoint": item.endpoint, 'health': not item.stopped,
-                        "stream_url": item.stream_url}
-            else:
-                return None
+                return {"id": item.id,
+                        "health": not item.stopped,
+                        "cameraIPAddress": item.camera_ip,
+                        "username": item.username,
+                        "password": item.password,
+                        "streamDestination": item.stream_dst,
+                        "streamUrl": item.stream_url}
+        return None
 
     def get_cameras(self):
-        return [{"id": item.id, "video_source": item.video_source, "endpoint": item.endpoint,
-                 'health': not item.stopped, "stream_url": item.stream_url}
-                for item in self.camera_list]
+        return [{"id": item.id,
+                 "health": not item.stopped,
+                 "cameraIPAddress": item.camera_ip,
+                 "username": item.username,
+                 "password": item.password,
+                 "streamDestination": item.stream_dst,
+                 "streamUrl": item.stream_url
+                 } for item in self.camera_list]
 
     def add_camera(self, params):
         self.object_counter += 1
         for item in self.camera_list:
-            if item.video_source == params['ip']:
+            if item.camera_ip == params['ip']:
                 cam = self.get_camera(item.id)
                 logger.info("Camera instance already exists")
                 return False, cam

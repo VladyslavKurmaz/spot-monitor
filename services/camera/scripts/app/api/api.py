@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request, jsonify, Response, render_template
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
@@ -6,7 +6,7 @@ from src.camera_manager import CameraManager
 
 manager = CameraManager()
 
-camera_server = Blueprint('camera_server', __name__)
+camera_server = Blueprint('camera_server', __name__, template_folder='templates')
 
 errors = {
     'NotFound':
@@ -34,6 +34,7 @@ class CameraAPI(Resource):
     """
     def get(self, idf):
         ret = manager.get_camera(idf)
+        print api.url_for(self, idf=idf)
         if ret is None:
             return construct_response(False, "No such camera", [], 404)
         else:

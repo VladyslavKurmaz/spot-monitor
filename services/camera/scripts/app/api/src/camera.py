@@ -1,3 +1,4 @@
+import os
 import logging
 
 from threading import Thread, Event
@@ -24,7 +25,7 @@ def stream(idf, username, password, video_source):
     :return:
     """
     log = "[STREAM] [{}] ".format(idf)
-    stream_src = "rtsp://{}:{}@{}/Streaming/Channels/101".format(username, password, video_source)
+    stream_src = "rtsp://{}:{}@{}:554/Streaming/Channels/101".format(username, password, video_source)
     frame_absence_counter = 0
     try:
         cam = cv2.VideoCapture(stream_src)
@@ -88,11 +89,19 @@ class Camera(Thread):
         self.id = idn
         self.log = "[{}] ".format(self.id)
 
-        self.video_source = camera_ip
+        self.camera_ip = camera_ip
         self.username = auth[0]
         self.password = auth[1]
-        self.dst_url = endpoint
-        self.stream_url = "stream/" + str(self.id)
+        self.stream_dst = endpoint
+
+        try:
+            host, port = os.environ['SERVICES_CAMERA_HOST'], os.environ['SERVICES_CAMERA_PORT']
+            self.stream_url = "http://{}:{}/stream/{}".format(host, port, self.id)
+        except Exception as ex:
+            logger.warning(self.log +
+                           "There are no evnironment variable {}".format(ex))
+            self.stream_url = "/stream/{}".format(self.id)
+
         self.endpoint = None
 
         self.event = CameraEvent()
@@ -109,10 +118,10 @@ class Camera(Thread):
         :return:
         """
         try:
-            response = requests.post(self.dst_url, json={"cam_id": self.id})
+            response = requests.post(self.stream_dst, json={"cam_id": self.id})
             json_resp = response.json()
             logger.debug(self.log + "Response : {}".format(json_resp))
-            self.endpoint = self.dst_url + json_resp['data'][0]['endpoint']
+            self.endpoint = self.stream_dst + json_resp['data'][0]['endpoint']
 
             while self.get_frame() is None:
                 time.sleep(0)
@@ -120,14 +129,14 @@ class Camera(Thread):
             logger.debug(self.log + "Configured")
         except Exception as e:
             logger.error(self.log + "Unable to create resource: {}".format(e))
-            self.stop()
+            # self.stop()
 
     def _thread(self):
         """
         Camera background thread
         """
         logger.debug(self.log + "Starting background camera stream")
-        frames_iterator = stream(self.id, self.username, self.password, self.video_source)
+        frames_iterator = stream(self.id, self.username, self.password, self.camera_ip)
         im = None
 
         while not self.stopped:
@@ -168,21 +177,21 @@ class Camera(Thread):
                 self.stop()
 
             img = self.get_frame()
-
-            try:
-                response = requests.post(self.endpoint, data=img, headers={'content-type': 'image/jpeg'})
-                logger.debug(self.log + "Response code: {}".format(response.status_code))
-            except Exception as e:
-                logger.error(self.log + "Consuming service error: {}".format(e))
-                logger.error(self.log + "Error counter: {}".format(self.error_counter))
-                self.error_counter += 1
-                time.sleep(1)
-
-        try:
-            response = requests.delete(self.endpoint)
-            logger.info(self.log + "Delete response: {}".format(response.json()))
-        finally:
-            return
+            logger.debug(self.log + "Frame ready")
+        #     try:
+        #         response = requests.post(self.endpoint, data=img, headers={'content-type': 'image/jpeg'})
+        #         logger.debug(self.log + "Response code: {}".format(response.status_code))
+        #     except Exception as e:
+        #         logger.error(self.log + "Consuming service error: {}".format(e))
+        #         logger.error(self.log + "Error counter: {}".format(self.error_counter))
+        #         self.error_counter += 1
+        #         time.sleep(1)
+        #
+        # try:
+        #     response = requests.delete(self.endpoint)
+        #     logger.info(self.log + "Delete response: {}".format(response.json()))
+        # finally:
+        #     return
 
     def stop(self):
         self.stopped = True

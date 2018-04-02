@@ -5,4 +5,5 @@ RUN pip install gunicorn requests gevent
 WORKDIR /scripts
 COPY ./scripts/ /scripts/
 
-CMD ["gunicorn", "-c", "./gunicorn.conf", "wsgi:app"]
+#CMD ["gunicorn", "-c", "./gunicorn.conf", "wsgi:app"]
+CMD ["python" , "wsgi.py"]

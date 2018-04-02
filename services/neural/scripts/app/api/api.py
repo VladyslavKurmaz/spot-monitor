@@ -3,12 +3,12 @@ from flask import Blueprint, request, jsonify
 import cv2
 import numpy as np
 
-from src.detector.deformable_detector import DeformableDetector
-# from src.detector.retina_detector import RetinaDetector
+# from src.detector.deformable_detector import DeformableDetector as Detector
+from src.detector.retina_detector import RetinaDetector as Detector
 
 detector_api = Blueprint('detector_api', __name__)
 
-detector = DeformableDetector()
+detector = Detector()
 
 
 @detector_api.route('/detect', methods=['POST'])
