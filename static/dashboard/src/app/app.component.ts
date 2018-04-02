@@ -6,7 +6,7 @@ import { catchError, retry } from 'rxjs/operators';
 
 
 import { hosts } from './../hosts';
-import { Camera, CamerasResponse } from './models/camera'
+import { Camera, CameraResponse, CamerasResponse } from './models/camera'
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -68,6 +68,7 @@ export class AppComponent {
   onNewCamera() {
     this.addCamera(this.newCamera).subscribe(
       data => {
+        this.cameras.push(data.data[0]);
         this.addNew = false;
       }
     );
@@ -92,12 +93,12 @@ export class AppComponent {
       this.resetSelectedCamera();
     }else{
       this.selectedCamera = camera;
-      this.selectedStream = this.selectedCamera.videoSource;
+      this.selectedStream = this.selectedCamera.streamUrl;
     }
   }
   //
-  private addCamera(camera: Camera): Observable<Camera> {
-    return this.http.post<Camera>(hosts.cameraHost + '/cameras', camera, httpOptions)
+  private addCamera(camera: Camera): Observable<CameraResponse> {
+    return this.http.post<CameraResponse>(hosts.cameraHost + '/cameras', camera, httpOptions)
       .pipe(
         //catchError(this.handleError('addCamera'))
       );
