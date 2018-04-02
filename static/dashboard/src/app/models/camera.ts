@@ -2,12 +2,11 @@
 export class Camera {
   id: number = 0;
   health: boolean = false; 
-  ip: string = "";
-  user: string = "";
+  cameraIPAddress: string = "";
+  username: string = "";
   password: string = "";
-  endpoint: string= "";
+  streamDestination: string= "";
   streamUrl: string = "";
-  videoSource: string = "";
 }
 
 export class Response {

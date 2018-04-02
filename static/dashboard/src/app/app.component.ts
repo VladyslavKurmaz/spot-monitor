@@ -26,12 +26,22 @@ export class AppComponent {
   newCamera: Camera = new Camera();
   selectedCamera = null;
   selectedStream = "";
+/*
+  id: number = 0;
+  health: boolean = false; 
+  cameraIPAddress: string = "";
+  username: string = "";
+  password: string = "";
+  streamDestination: string= "";
+  streamUrl: string = "";
+
+*/
 
   constructor(private http: HttpClient){
-    this.newCamera.ip = 'http://127.0.0.1:8008';
-    this.newCamera.user = 'admin';
+    this.newCamera.cameraIPAddress = 'http://127.0.0.1:8008';
+    this.newCamera.username = 'admin';
     this.newCamera.password = 'admin';
-    this.newCamera.endpoint = 'http://127.0.0.1:8088';
+    this.newCamera.streamDestination = 'http://127.0.0.1:8088';
     //
     this.resetSelectedCamera();
   }
