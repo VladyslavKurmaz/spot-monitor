@@ -40,14 +40,14 @@ class CameraManager(object):
     def add_camera(self, params):
         self.object_counter += 1
         for item in self.camera_list:
-            if item.camera_ip == params['ip']:
+            if item.camera_ip == params['cameraIPAddress']:
                 cam = self.get_camera(item.id)
                 logger.info("Camera instance already exists")
                 return False, cam
 
-        cam = Camera(idn=self.object_counter, camera_ip=params['ip'],
-                     auth=[params['user'], params['password']],
-                     endpoint=params['endpoint'])
+        cam = Camera(idn=self.object_counter, camera_ip=params['cameraIPAddress'],
+                     auth=[params['username'], params['password']],
+                     endpoint=params['streamDestination'])
 
         logger.info("Camera instance created")
         self.camera_list.append(cam)
